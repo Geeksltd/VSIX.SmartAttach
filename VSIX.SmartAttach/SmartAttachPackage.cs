@@ -5,10 +5,7 @@ using EnvDTE80;
 using GeeksAddin;
 using GeeksAddin.Attacher;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.CodeAnalysis;
-using System.Linq;
 
 namespace Geeks.GeeksProductivityTools
 {
@@ -18,16 +15,16 @@ namespace Geeks.GeeksProductivityTools
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionsPage), "Geeks productivity tools", "General", 0, 0, true)]
     [Guid(GuidList.GuidGeeksProductivityToolsPkgString)]
-    public sealed class GeeksProductivityToolsPackage : Package
+    public sealed class SmartAttachPackage : Package
     {
-        public GeeksProductivityToolsPackage() { }
+        public SmartAttachPackage() { }
 
         // Strongly reference events so that it's not GC'd
         EnvDTE.DocumentEvents docEvents;
         EnvDTE.SolutionEvents solEvents;
         EnvDTE.Events events;
 
-        public static GeeksProductivityToolsPackage Instance { get; private set; }
+        public static SmartAttachPackage Instance { get; private set; }
 
         protected override void Initialize()
         {
@@ -41,11 +38,22 @@ namespace Geeks.GeeksProductivityTools
             // Add our command handlers for menu (commands must exist in the .vsct file)
             var menuCommandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
+
+            var CmdidWebFileToggleId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, 0x101);
+            var CmdidAttacherId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, (int)PkgCmdIDList.CmdidAttacher);
+
+            var otherMenu = menuCommandService.FindCommand(CmdidWebFileToggleId);
+
+            if (otherMenu != null)
+            {
+
+            }
+
             if (null != menuCommandService)
             {
-                menuCommandService.AddCommand(new MenuCommand(CallAttacher,
-                                               new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet,
-                                                            (int)PkgCmdIDList.CmdidAttacher)));
+                var MenuCommand = new OleMenuCommand(CallAttacher, CmdidAttacherId);
+                MenuCommand.BeforeQueryStatus += MenuCommand_BeforeQueryStatus;
+                menuCommandService.AddCommand(MenuCommand);
             }
 
             SetCommandBindings();
@@ -56,6 +64,18 @@ namespace Geeks.GeeksProductivityTools
             solEvents = events.SolutionEvents;
             docEvents.DocumentSaved += DocumentEvents_DocumentSaved;
             solEvents.Opened += delegate { App.Initialize(GetDialogPage(typeof(OptionsPage)) as OptionsPage); };
+        }
+
+        private void MenuCommand_BeforeQueryStatus(object sender, EventArgs e)
+        {
+            var cmd = sender as OleMenuCommand;
+            //var activeDoc = App.DTE.ActiveDocument;
+
+            //if (null != cmd && activeDoc != null)
+            //{
+            //    var fileName = App.DTE.ActiveDocument.FullName.ToUpper();
+            //    cmd.Visible = true;
+            //}
         }
 
         void DocumentEvents_DocumentSaved(EnvDTE.Document document)
