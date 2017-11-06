@@ -1,6 +1,6 @@
 using EnvDTE;
 
-namespace Geeks.GeeksProductivityTools.Extensions
+namespace Geeks.VSIX.SmartAttach.Extensions
 {
     public static class FileExtensions
     {

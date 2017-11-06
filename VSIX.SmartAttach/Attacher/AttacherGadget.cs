@@ -1,6 +1,7 @@
 using EnvDTE80;
+using GeeksAddin;
 
-namespace GeeksAddin.Attacher
+namespace Geeks.VSIX.SmartAttach.Attacher
 {
     internal class AttacherGadget : Gadget
     {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.Web.Administration;
 
-namespace GeeksAddin.Attacher
+namespace Geeks.VSIX.SmartAttach.Attacher
 {
     internal class IIS : IDisposable
     {

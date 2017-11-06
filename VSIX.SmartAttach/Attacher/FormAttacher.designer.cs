@@ -1,4 +1,4 @@
-namespace GeeksAddin.Attacher
+namespace Geeks.VSIX.SmartAttach.Attacher
 {
     partial class FormAttacher
     {

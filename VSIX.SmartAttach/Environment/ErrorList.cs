@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 
-namespace Geeks.GeeksProductivityTools
+namespace Geeks.VSIX.SmartAttach.Base
 {
     public static class ErrorList
     {

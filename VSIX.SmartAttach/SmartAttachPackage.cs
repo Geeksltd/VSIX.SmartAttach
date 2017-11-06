@@ -3,11 +3,12 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using EnvDTE80;
 using GeeksAddin;
-using GeeksAddin.Attacher;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Geeks.VSIX.SmartAttach.Attacher;
+using Geeks.VSIX.SmartAttach.Base;
 
-namespace Geeks.GeeksProductivityTools
+namespace Geeks.VSIX.SmartAttach
 {
     [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]    // Microsoft.VisualStudio.VSConstants.UICONTEXT_NoSolution
     [PackageRegistration(UseManagedResourcesOnly = true)]

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 
-namespace Geeks.GeeksProductivityTools
+namespace Geeks.VSIX.SmartAttach
 {
     public class OptionsPage : DialogPage
     {

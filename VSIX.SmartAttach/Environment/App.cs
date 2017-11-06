@@ -2,7 +2,7 @@ using System;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace Geeks.GeeksProductivityTools
+namespace Geeks.VSIX.SmartAttach.Base
 {
     public static class App
     {

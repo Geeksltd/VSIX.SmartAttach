@@ -5,10 +5,11 @@ using System.Linq;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
-using Geeks.GeeksProductivityTools;
 using Geeks.VSIX.SmartAttach.Properties;
+using GeeksAddin;
+using Geeks.VSIX.SmartAttach.Base;
 
-namespace GeeksAddin.Attacher
+namespace Geeks.VSIX.SmartAttach.Attacher
 {
     public partial class FormAttacher : Form
     {

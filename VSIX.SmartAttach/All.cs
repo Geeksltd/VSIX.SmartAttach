@@ -1,7 +1,8 @@
+using Geeks.VSIX.SmartAttach.Attacher;
+using GeeksAddin;
 using System.Collections.Generic;
-using GeeksAddin.Attacher;
 
-namespace GeeksAddin
+namespace Geeks.VSIX.SmartAttach
 {
     public static class All
     {

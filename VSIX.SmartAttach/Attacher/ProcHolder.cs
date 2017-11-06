@@ -1,3 +1,4 @@
+using GeeksAddin;
 using System;
 using System.Linq;
 using System.Management;
@@ -5,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
-namespace GeeksAddin.Attacher
+namespace Geeks.VSIX.SmartAttach.Attacher
 {
     public class ProcHolder
     {
