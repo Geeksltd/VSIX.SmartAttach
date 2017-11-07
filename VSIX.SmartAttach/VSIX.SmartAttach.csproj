@@ -16,7 +16,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7B708065-1213-49BD-94B6-A67A786FAC5E}</ProjectGuid>
+    <ProjectGuid>{A47F048A-4F28-4604-AF9A-A4F5D55362C5}</ProjectGuid>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <VsixType>v3</VsixType>
@@ -250,13 +250,11 @@
     <Compile Include="Attacher\Similarity.cs" />
     <Compile Include="CommandConstants\Guids.cs" />
     <Compile Include="CommandConstants\PkgCmdID.cs" />
-    <Compile Include="Environment\App.cs" />
-    <Compile Include="Environment\ErrorList.cs" />
-    <Compile Include="ErrorNotification\ErrorNotification.cs" />
-    <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="Extensions\DteExtensions.cs" />
-    <Compile Include="Extensions\Extentions.cs" />
-    <Compile Include="Extensions\FileExtensions.cs" />
+    <Compile Include="Infra\Environment\App.cs" />
+    <Compile Include="Infra\Environment\ErrorList.cs" />
+    <Compile Include="Infra\ErrorNotification\ErrorNotification.cs" />
+    <Compile Include="Infra\Extensions\DteExtensions.cs" />
+    <Compile Include="Infra\Extensions\FileExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="OptionsPage.cs">
       <SubType>Component</SubType>
@@ -274,8 +272,8 @@
     <Compile Include="SmartAttachPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\GlobalSettings.cs" />
-    <Compile Include="Structures\Gadget.cs" />
-    <Compile Include="Utility\Utils.cs" />
+    <Compile Include="Infra\Structures\Gadget.cs" />
+    <Compile Include="Infra\Utility\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Attacher\FormAttacher.resx">
@@ -347,6 +345,14 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\VSIX.SmartFinder\VSIX.Core\VSIX.Core.csproj">
+      <Project>{E828D1A0-7034-4DBD-B70D-6C3851A6C222}</Project>
+      <Name>VSIX.Core</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

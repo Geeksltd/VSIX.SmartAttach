@@ -5,6 +5,7 @@ using System.Management;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Geeks.VSIX.Core.Utility;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -56,7 +57,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             if (match.Success)
                 return match.Groups["pool"].Value.Trim();
 
-            var args = Utils.SplitCommandLine(fullCommandLine);
+            var args = Geeks.VSIX.Core.Utility.Utils.SplitCommandLine(fullCommandLine);
 
             // for IIS express
             var siteArg = args.FirstOrDefault(a => a.StartsWith("/site:"));
