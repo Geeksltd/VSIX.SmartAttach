@@ -27,10 +27,8 @@
   <Symbols>
     <GuidSymbol name="guidGeeksProductivityToolsPkg" value="{c6176957-c61c-4beb-8dd8-e7c0170b0bf5}" />
 
-    <GuidSymbol name="GuidGeeksProductivityToolsCmdSet" value="{8d55b43e-5f7c-44dd-8b02-71c751d8c440}">
-      <IDSymbol name="GeeksMenuGroup" value="0x1020" />
-      <IDSymbol name="GeeksSubMenu" value="0x1021" />
-      <IDSymbol name="cmdidGeeksSubMenu" value="0x1022" />
+    <GuidSymbol name="GuidGeeksProductivityToolsCmdSet" value="{8d55b42e-5f7c-44dd-8b02-71c751d8c440}">
+      <IDSymbol name="GeeksMenuGroup" value="0x4020" />
       <IDSymbol name="cmdidAttacher" value="0x0100" />
     </GuidSymbol>
   </Symbols>
