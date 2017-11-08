@@ -7,13 +7,22 @@
   <!--<Extern href="msobtnid.h" xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" />-->
   <Commands package="guidGeeksProductivityToolsPkg">
     <Groups>
-      <Group guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup2" priority="0x0600">
-        <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksSubMenu5" />
+      <Group guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup" priority="0x0600">
+        <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksSubMenu" />
       </Group>
     </Groups>
+    <Menus>
+      <Menu guid="GuidGeeksProductivityToolsCmdSet" id="GeeksSubMenu" priority="0x0000" type="Menu">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_OTHER2" />
+        <Strings>
+          <ButtonText>Geeks</ButtonText>
+          <CommandName>Geeks</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
     <Buttons>
       <Button guid="GuidGeeksProductivityToolsCmdSet" id="cmdidAttacher" priority="0x0100" type="Button">
-        <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup2" />
+        <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup" />
         <Strings>
           <CommandName>cmdidAttacher</CommandName>
           <ButtonText>Attacher...</ButtonText>
@@ -28,8 +37,9 @@
     <GuidSymbol name="guidGeeksProductivityToolsPkg" value="{c6176957-c61c-4beb-8dd8-e7c0170b0bf5}" />
 
     <GuidSymbol name="GuidGeeksProductivityToolsCmdSet" value="{8d55b43e-5f7c-44dd-8b02-71c751d8c440}">
-      <IDSymbol name="GeeksMenuGroup2" value="0x2020" />
-      <IDSymbol name="GeeksSubMenu5" value="0x3021" />
+      <IDSymbol name="GeeksMenuGroup" value="0x1020" />
+      <IDSymbol name="GeeksSubMenu" value="0x1021" />
+      <IDSymbol name="cmdidGeeksSubMenu" value="0x1022" />
       <IDSymbol name="cmdidAttacher" value="0x0100" />
     </GuidSymbol>
   </Symbols>
