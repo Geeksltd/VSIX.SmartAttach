@@ -8,18 +8,9 @@
   <Commands package="guidGeeksProductivityToolsPkg">
     <Groups>
       <Group guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup" priority="0x0600">
-        <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksSubMenu" />
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
     </Groups>
-    <Menus>
-      <Menu guid="GuidGeeksProductivityToolsCmdSet" id="GeeksSubMenu" priority="0x0000" type="Menu">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_TOOLS_OTHER2" />
-        <Strings>
-          <ButtonText>Geeks</ButtonText>
-          <CommandName>Geeks</CommandName>
-        </Strings>
-      </Menu>
-    </Menus>
     <Buttons>
       <Button guid="GuidGeeksProductivityToolsCmdSet" id="cmdidAttacher" priority="0x0100" type="Button">
         <Parent guid="GuidGeeksProductivityToolsCmdSet" id="GeeksMenuGroup" />
