@@ -1,5 +1,6 @@
 using GeeksAddin;
 using System;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
@@ -8,16 +9,21 @@ using System.Xml.XPath;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
+    extern alias MSharp;
+
     public class ProcHolder
     {
         public EnvDTE80.Process2 Process { get; private set; }
         public string AppPool { get; private set; }
+        public DateTime? StartTime { get; private set; } = null;
 
         public override string ToString()
         {
             if (Process == null)
                 return "NULL";
-            return String.Format("{1} [{0}] ({2})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
+
+            if (StartTime.HasValue == false) return String.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
+            return String.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
         }
 
         /// <summary>
@@ -81,7 +87,13 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 }
             }
 
-            return "Unknown";
+            var tp = System.Diagnostics.Process.GetProcessById(Process.ProcessID);
+            if (tp != null)
+            {
+                StartTime = tp.StartTime;
+            }
+
+            return Path.GetFileName(Process.Name);
         }
     }
 }

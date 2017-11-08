@@ -150,16 +150,16 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             // 
             // listBoxProcess
             // 
-            this.listBoxProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.listBoxProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxProcess.FormattingEnabled = true;
-            this.listBoxProcess.ItemHeight = 31;
+            this.listBoxProcess.ItemHeight = 16;
             this.listBoxProcess.Location = new System.Drawing.Point(8, 37);
             this.listBoxProcess.Name = "listBoxProcess";
             this.listBoxProcess.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxProcess.Size = new System.Drawing.Size(582, 252);
+            this.listBoxProcess.Size = new System.Drawing.Size(582, 244);
             this.listBoxProcess.TabIndex = 4;
             this.listBoxProcess.SelectedIndexChanged += new System.EventHandler(this.listBoxProcess_SelectedIndexChanged);
             this.listBoxProcess.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBoxProcess_KeyDown);
@@ -181,8 +181,8 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             // 
             // lstRemoteMachines
             // 
-            this.lstRemoteMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.lstRemoteMachines.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstRemoteMachines.FormattingEnabled = true;
             this.lstRemoteMachines.Location = new System.Drawing.Point(6, 33);
@@ -203,7 +203,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             // 
             // txtMachineName
             // 
-            this.txtMachineName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.txtMachineName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtMachineName.Location = new System.Drawing.Point(66, 7);
             this.txtMachineName.Name = "txtMachineName";
@@ -262,6 +262,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             this.statusBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

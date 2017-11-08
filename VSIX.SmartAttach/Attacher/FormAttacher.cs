@@ -54,11 +54,9 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             int index = 0;
             using (var iis = new IIS())
             {
-                foreach (EnvDTE80.Process2 proc in GetWorkerProcesses())
+                foreach (ProcHolder holder in GetWorkerProcesses().OfType<EnvDTE80.Process2>().Select(proc => new ProcHolder(proc)).OrderByDescending(proc => proc.StartTime))
                 {
-                    var holder = new ProcHolder(proc);
-
-                    if ((checkBoxExcludeMSharp.Checked && !holder.AppPool.Contains("M#")) || (!checkBoxExcludeMSharp.Checked))
+                    if ((checkBoxExcludeMSharp.Checked && holder.AppPool != null && !holder.AppPool.Contains("M#")) || (!checkBoxExcludeMSharp.Checked))
                     {
                         listBoxProcess.SafeAction(l => l.Items.Add(holder));
                     }
@@ -103,8 +101,8 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
             foreach (EnvDTE.Process p in DTE.Debugger.LocalProcesses)
             {
-                if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
-                    yield return p;
+                //if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
+                yield return p;
             }
 
             var machinesString = Settings.Default.RemoteMachines;
