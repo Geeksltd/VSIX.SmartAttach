@@ -1,13 +1,13 @@
+using EnvDTE;
+using EnvDTE80;
+using Geeks.VSIX.SmartAttach.Base;
+using Geeks.VSIX.SmartAttach.Properties;
+using GeeksAddin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using EnvDTE;
-using EnvDTE80;
-using Geeks.VSIX.SmartAttach.Properties;
-using GeeksAddin;
-using Geeks.VSIX.SmartAttach.Base;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -37,9 +37,8 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
             var machines = GetRemoteMachineNames(machinesString);
             foreach (var m in machines)
-            {
                 lstRemoteMachines.Items.Add(m);
-            }
+
         }
 
         void RefreshList()
@@ -51,7 +50,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             var nominatedForSelection = -1;
             var lengthOfLastNomination = 0;
 
-            int index = 0;
+            var index = 0;
             using (var iis = new IIS())
             {
                 foreach (ProcHolder holder in GetWorkerProcesses().OfType<EnvDTE80.Process2>().Select(proc => new ProcHolder(proc)).OrderByDescending(proc => proc.StartTime))
@@ -78,9 +77,11 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                             }
                         }
                     }
+
                     index++;
                 }
             }
+
             var count = listBoxProcess.SafeGet(() => listBoxProcess.Items.Count);
             if (count == 0)
                 btnAttachToAll.SafeAction(b => b.Enabled = false);
@@ -100,10 +101,9 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             lblStatus.SafeAction(statusBar, s => s.Text = "Loading Local processes...");
 
             foreach (EnvDTE.Process p in DTE.Debugger.LocalProcesses)
-            {
-                //if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
+                // if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
                 yield return p;
-            }
+
 
             var machinesString = Settings.Default.RemoteMachines;
             if (machinesString.HasValue())
@@ -153,10 +153,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             return machinesString.Split('|').Where(m => m.HasValue()).Select(m => m.ToUpper()).Distinct().OrderBy(m => m);
         }
 
-        void btnAttach_Click(object sender, EventArgs e)
-        {
-            AttachToSelected();
-        }
+        void btnAttach_Click(object sender, EventArgs e) => AttachToSelected();
 
         void AttachToSelected()
         {
@@ -191,14 +188,12 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     }
                 }
             }
+
             System.Threading.Thread.Sleep(100);
             RefreshList();
         }
 
-        void listBoxProcess_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            AttachToSelected();
-        }
+        void listBoxProcess_MouseDoubleClick(object sender, MouseEventArgs e) => AttachToSelected();
 
         void listBoxProcess_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -213,6 +208,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 {
                     holder.Process.Attach();
                 }
+
             Close();
         }
 
@@ -277,10 +273,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             }
         }
 
-        void ProcessListLoader_DoWork(object sender, DoWorkEventArgs e)
-        {
-            RefreshList();
-        }
+        void ProcessListLoader_DoWork(object sender, DoWorkEventArgs e) => RefreshList();
 
         void FilterItemsWithSearchTerm()
         {
@@ -296,10 +289,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             }
         }
 
-        void txtSearchProcess_TextChanged(object sender, EventArgs e)
-        {
-            FilterItemsWithSearchTerm();
-        }
+        void txtSearchProcess_TextChanged(object sender, EventArgs e) => FilterItemsWithSearchTerm();
 
         void listBoxProcess_KeyDown(object sender, KeyEventArgs e)
         {
@@ -309,9 +299,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             if (tabControl.SelectedTab == tbpgRemoteMachines) DeleteCurrentRemoteMachine();
         }
 
-        void checkBoxExcludeMSharp_CheckedChanged(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        void checkBoxExcludeMSharp_CheckedChanged(object sender, EventArgs e) => RefreshList();
     }
 }

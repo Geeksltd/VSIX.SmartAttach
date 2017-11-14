@@ -1,6 +1,6 @@
+using Microsoft.Web.Administration;
 using System;
 using System.Linq;
-using Microsoft.Web.Administration;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -30,7 +30,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             try
             {
                 var applications = ServerManager.Sites.SelectMany(s => s.Applications);
-                var application = applications.FirstOrDefault(app => String.Compare(app.ApplicationPoolName, poolName, ignoreCase: true) == 0);
+                var application = applications.FirstOrDefault(app => string.Compare(app.ApplicationPoolName, poolName, ignoreCase: true) == 0);
                 if (application == null) return null;
 
                 return application.VirtualDirectories["/"].PhysicalPath;

@@ -1,11 +1,11 @@
 namespace GeeksAddin
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using EnvDTE;
     using EnvDTE80;
     using Geeks.VSIX.SmartAttach.Base;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     static class DteExtensions
     {
@@ -47,7 +47,6 @@ namespace GeeksAddin
             var items = (Array)App.DTE.ToolWindows.SolutionExplorer.SelectedItems;
             foreach (UIHierarchyItem selItem in items)
             {
-
                 if (selItem.Object is ProjectItem item)
                     yield return item.Properties.Item("FullPath").Value.ToString();
             }

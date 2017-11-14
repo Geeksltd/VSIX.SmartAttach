@@ -17,15 +17,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         public string AppPool { get; private set; }
         public DateTime? StartTime { get; private set; } = null;
 
-        public override string ToString()
-        {
-            if (Process == null)
-                return "NULL";
-
-            if (StartTime.HasValue == false) return String.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
-            return String.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
-        }
-
         /// <summary>
         /// Creates a new ProcHolder instance.
         /// </summary>
@@ -53,6 +44,15 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             catch (Exception)
             {
             }
+        }
+
+        public override string ToString()
+        {
+            if (Process == null)
+                return "NULL";
+
+            if (StartTime.HasValue == false) return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
+            return string.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
         }
 
         string GetAppPool(string fullCommandLine)

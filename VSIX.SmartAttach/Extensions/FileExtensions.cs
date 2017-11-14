@@ -11,6 +11,6 @@ namespace Geeks.VSIX.SmartAttach.Extensions
         public static bool IsCSharpDesignerFile(this ProjectItem projectItem)
         {
             return projectItem.Kind == Constants.vsProjectItemKindPhysicalFile && projectItem.Name.ToLower().EndsWith(".designer.cs");
-        }        
+        }
     }
 }

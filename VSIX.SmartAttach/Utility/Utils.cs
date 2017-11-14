@@ -1,12 +1,12 @@
+using EnvDTE;
+using EnvDTE80;
+using Geeks.VSIX.SmartAttach;
+using Geeks.VSIX.SmartAttach.Base;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell.Interop;
-using Geeks.VSIX.SmartAttach;
-using Geeks.VSIX.SmartAttach.Base;
 
 namespace GeeksAddin
 {

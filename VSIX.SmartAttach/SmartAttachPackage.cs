@@ -1,12 +1,11 @@
+using EnvDTE80;
+using Geeks.VSIX.SmartAttach.Attacher;
+using Geeks.VSIX.SmartAttach.Base;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
-using EnvDTE80;
-using GeeksAddin;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Shell;
-using Geeks.VSIX.SmartAttach.Attacher;
-using Geeks.VSIX.SmartAttach.Base;
 
 namespace Geeks.VSIX.SmartAttach
 {
@@ -39,22 +38,20 @@ namespace Geeks.VSIX.SmartAttach
             // Add our command handlers for menu (commands must exist in the .vsct file)
             var menuCommandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
+            var cmdidWebFileToggleId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, 0x101);
+            var cmdidAttacherId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, (int)PkgCmdIDList.CmdidAttacher);
 
-            var CmdidWebFileToggleId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, 0x101);
-            var CmdidAttacherId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, (int)PkgCmdIDList.CmdidAttacher);
-
-            var otherMenu = menuCommandService.FindCommand(CmdidWebFileToggleId);
+            var otherMenu = menuCommandService.FindCommand(cmdidWebFileToggleId);
 
             if (otherMenu != null)
             {
-
             }
 
             if (null != menuCommandService)
             {
-                var MenuCommand = new OleMenuCommand(CallAttacher, CmdidAttacherId);
-                MenuCommand.BeforeQueryStatus += MenuCommand_BeforeQueryStatus;
-                menuCommandService.AddCommand(MenuCommand);
+                var menuCommand = new OleMenuCommand(CallAttacher, cmdidAttacherId);
+                menuCommand.BeforeQueryStatus += MenuCommand_BeforeQueryStatus;
+                menuCommandService.AddCommand(menuCommand);
             }
 
             SetCommandBindings();
@@ -67,16 +64,16 @@ namespace Geeks.VSIX.SmartAttach
             solEvents.Opened += delegate { App.Initialize(GetDialogPage(typeof(OptionsPage)) as OptionsPage); };
         }
 
-        private void MenuCommand_BeforeQueryStatus(object sender, EventArgs e)
+        void MenuCommand_BeforeQueryStatus(object sender, EventArgs e)
         {
             var cmd = sender as OleMenuCommand;
-            //var activeDoc = App.DTE.ActiveDocument;
+            // var activeDoc = App.DTE.ActiveDocument;
 
-            //if (null != cmd && activeDoc != null)
-            //{
+            // if (null != cmd && activeDoc != null)
+            // {
             //    var fileName = App.DTE.ActiveDocument.FullName.ToUpper();
             //    cmd.Visible = true;
-            //}
+            // }
         }
 
         void DocumentEvents_DocumentSaved(EnvDTE.Document document)
@@ -95,7 +92,6 @@ namespace Geeks.VSIX.SmartAttach
             }
             catch
             {
-
             }
         }
 
