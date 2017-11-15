@@ -1,5 +1,6 @@
 using GeeksAddin;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -22,11 +23,18 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         /// </summary>
         public ProcHolder(EnvDTE80.Process2 prc)
         {
-            if (prc == null)
-                return;
-            Process = prc;
             try
             {
+                if (prc == null) return;
+
+                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+
+                if (IsDotNetProcess(tp) == false) return;
+
+                StartTime = tp.StartTime;
+
+                Process = prc;
+
                 using (var mos = new ManagementObjectSearcher(
                     @"\\{0}\root\cimv2".FormatWith(prc.TransportQualifier.Replace("Geeks@", "")),
                     "SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + prc.ProcessID))
@@ -36,10 +44,14 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                         var commandLine = mo["CommandLine"];
                         if (commandLine != null)
                         {
-                            AppPool += GetAppPool(commandLine.ToString());
+                            var appPool= GetAppPool(commandLine.ToString());
+
+                            if (appPool != null) AppPool += appPool;
                         }
                     }
                 }
+
+                if(AppPool == null) AppPool = Path.GetFileName(Process.Name);
             }
             catch (Exception)
             {
@@ -48,11 +60,25 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
         public override string ToString()
         {
-            if (Process == null)
-                return "NULL";
+            if (Process == null) return "NULL";
 
             if (StartTime.HasValue == false) return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
             return string.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
+        }
+        public static bool IsDotNetProcess(Process process)
+        {
+            try
+            {
+                var modules = process.Modules.Cast<ProcessModule>().Where(
+                    m => m.ModuleName.StartsWith("mscor", StringComparison.InvariantCultureIgnoreCase));
+
+                return modules.Any();
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         string GetAppPool(string fullCommandLine)
@@ -87,13 +113,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 }
             }
 
-            var tp = System.Diagnostics.Process.GetProcessById(Process.ProcessID);
-            if (tp != null)
-            {
-                StartTime = tp.StartTime;
-            }
-
-            return Path.GetFileName(Process.Name);
+            return null;
         }
     }
 }
