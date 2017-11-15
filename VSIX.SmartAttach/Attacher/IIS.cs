@@ -52,7 +52,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
         void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {

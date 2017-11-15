@@ -44,14 +44,14 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                         var commandLine = mo["CommandLine"];
                         if (commandLine != null)
                         {
-                            var appPool= GetAppPool(commandLine.ToString());
+                            var appPool = GetAppPool(commandLine.ToString());
 
                             if (appPool != null) AppPool += appPool;
                         }
                     }
                 }
 
-                if(AppPool == null) AppPool = Path.GetFileName(Process.Name);
+                if (AppPool == null) AppPool = Path.GetFileName(Process.Name);
             }
             catch (Exception)
             {
@@ -73,7 +73,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     m => m.ModuleName.StartsWith("mscor", StringComparison.InvariantCultureIgnoreCase));
 
                 return modules.Any();
-
             }
             catch (Exception e)
             {

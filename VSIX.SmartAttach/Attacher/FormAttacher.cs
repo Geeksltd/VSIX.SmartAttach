@@ -38,7 +38,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             var machines = GetRemoteMachineNames(machinesString);
             foreach (var m in machines)
                 lstRemoteMachines.Items.Add(m);
-
         }
 
         void RefreshList()
@@ -103,7 +102,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             foreach (EnvDTE.Process p in DTE.Debugger.LocalProcesses)
                 // if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
                 yield return p;
-
 
             var machinesString = Settings.Default.RemoteMachines;
             if (machinesString.HasValue())

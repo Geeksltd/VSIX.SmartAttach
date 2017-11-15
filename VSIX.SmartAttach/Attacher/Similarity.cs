@@ -15,7 +15,6 @@ namespace System
             {
                 foreach (var poolWord in poolWords)
                     totalDistance += Distance(solutionWord, poolWord);
-
             }
 
             var substitutions = solutionWords.Length * poolName.Length;
@@ -45,9 +44,7 @@ namespace System
 
             for (int i = 0; i <= firstArgumentLength; i++) distance[i, 0] = i;
 
-
             for (int j = 0; j <= secondArgumentLength; j++) distance[0, j] = j;
-
 
             // Step 3
             for (int i = 1; i <= firstArgumentLength; i++)

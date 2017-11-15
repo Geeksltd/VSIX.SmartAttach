@@ -33,7 +33,7 @@ namespace Geeks.VSIX.SmartAttach
 
             Instance = this;
 
-            var componentModel = (IComponentModel)this.GetService(typeof(SComponentModel));
+            var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             var menuCommandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
