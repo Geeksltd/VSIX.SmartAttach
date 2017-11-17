@@ -14,6 +14,9 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
     public class ProcHolder
     {
+        public static readonly string WebServer_W3WP_ProcessName = "w3wp";
+        static readonly string[] WebServerProcessNames = new[] { WebServer_W3WP_ProcessName, "iisexpress.exe" };
+
         public EnvDTE80.Process2 Process { get; private set; }
         public string AppPool { get; private set; }
         public DateTime? StartTime { get; private set; } = null;
@@ -27,11 +30,18 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             {
                 if (prc == null) return;
 
-                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+                try
+                {
+                    var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
 
-                if (IsDotNetProcess(tp) == false) return;
+                    if (WebServerProcessNames.Any(n => tp.ProcessName.IndexOf(n) >= 0) == false && IsDotNetProcess(tp) == false) return;
 
-                StartTime = tp.StartTime;
+                    StartTime = tp.StartTime;
+                }
+                catch
+                {
+
+                }
 
                 Process = prc;
 

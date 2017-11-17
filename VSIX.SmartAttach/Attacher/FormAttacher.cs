@@ -52,7 +52,11 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             var index = 0;
             using (var iis = new IIS())
             {
-                foreach (ProcHolder holder in GetWorkerProcesses().OfType<EnvDTE80.Process2>().Select(proc => new ProcHolder(proc)).OrderByDescending(proc => proc.StartTime))
+                var processes = GetWorkerProcesses().OfType<EnvDTE80.Process2>().ToList();
+
+                if (CheckUser(processes) == false) return;
+
+                foreach (ProcHolder holder in processes.Select(proc => new ProcHolder(proc)).OrderByDescending(proc => proc.StartTime))
                 {
                     if ((checkBoxExcludeMSharp.Checked && holder.AppPool != null && !holder.AppPool.Contains("M#")) || (!checkBoxExcludeMSharp.Checked))
                     {
@@ -93,14 +97,31 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             lblStatus.SafeAction(statusBar, s => s.Text = "");
         }
 
-        static readonly string[] WebServerProcessNames = new[] { "w3wp", "iisexpress.exe" };
+        bool CheckUser(List<Process2> processes)
+        {
+            var w3wpProcess = processes.FirstOrDefault(x => x.Name.Contains(ProcHolder.WebServer_W3WP_ProcessName));
+            if (w3wpProcess != null)
+            {
+                var process = System.Diagnostics.Process.GetProcessById(w3wpProcess.ProcessID);
+                try
+                {
+                    var startDateTime = process.StartTime;
+                }
+                catch (System.ComponentModel.Win32Exception ex) when (ex.HResult == -2147467259)
+                {
+                    this.SafeAction(l => MessageBox.Show("You should run Visual studio under administrator user", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error));
+                    this.SafeAction(l => l.Close());
+                    return false;
+                }
+            }
+            return true;
+        }
 
         IEnumerable<EnvDTE.Process> GetWorkerProcesses()
         {
             lblStatus.SafeAction(statusBar, s => s.Text = "Loading Local processes...");
 
             foreach (EnvDTE.Process p in DTE.Debugger.LocalProcesses)
-                // if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
                 yield return p;
 
             var machinesString = Settings.Default.RemoteMachines;
@@ -138,8 +159,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     {
                         foreach (EnvDTE.Process p in processes)
                         {
-                            if (WebServerProcessNames.Any(n => p.Name.IndexOf(n) >= 0))
-                                yield return p;
+                            yield return p;
                         }
                     }
                 }
