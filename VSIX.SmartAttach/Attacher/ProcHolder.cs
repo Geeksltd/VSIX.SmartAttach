@@ -16,6 +16,8 @@ namespace Geeks.VSIX.SmartAttach.Attacher
     {
         public static readonly string WebServer_W3WP_ProcessName = "w3wp";
         static readonly string[] WebServerProcessNames = new[] { WebServer_W3WP_ProcessName, "iisexpress.exe" };
+        static readonly string[] ExcludedProcessNames = new[] { "ServiceHub".ToLower(), "Microsoft".ToLower(), "iisexpresstray", "devenv" };
+        static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
 
         public EnvDTE80.Process2 Process { get; private set; }
         public string AppPool { get; private set; }
@@ -29,10 +31,15 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             try
             {
                 if (prc == null) return;
+                var name = prc.Name;
+
+                if (ExcludedProcessNames.Any(x => prc.Name.ToLower().StartsWith(x))) return;
 
                 try
                 {
                     var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+
+                    if (ExcludedProcessNames.Any(x => tp.ProcessName.ToLower().StartsWith(x))) return;
 
                     if (WebServerProcessNames.Any(n => tp.ProcessName.IndexOf(n) >= 0) == false && IsDotNetProcess(tp) == false) return;
 
@@ -54,6 +61,14 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                         var commandLine = mo["CommandLine"];
                         if (commandLine != null)
                         {
+                            var cmdLineStr = commandLine.ToString();
+
+                            if (ExcludedProcessNames_WithCommpandLine.Any(x => cmdLineStr.ToLower().StartsWith(x)))
+                            {
+                                Process = null;
+                                return;
+                            }
+
                             var appPool = GetAppPool(commandLine.ToString());
 
                             if (appPool != null) AppPool += appPool;
