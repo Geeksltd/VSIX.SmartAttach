@@ -7,6 +7,7 @@ using System.Management;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Collections.Concurrent;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -14,42 +15,62 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
     public class ProcHolder
     {
-        public static readonly string WebServer_W3WP_ProcessName = "w3wp";
-        static readonly string[] WebServerProcessNames = new[] { WebServer_W3WP_ProcessName, "iisexpress.exe" };
-        static readonly string[] ExcludedProcessNames = new[] { "ServiceHub".ToLower(), "Microsoft".ToLower(), "iisexpresstray", "devenv" };
-        static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
-
         public EnvDTE80.Process2 Process { get; private set; }
         public string AppPool { get; private set; }
         public DateTime? StartTime { get; private set; } = null;
 
-        /// <summary>
-        /// Creates a new ProcHolder instance.
-        /// </summary>
-        public ProcHolder(EnvDTE80.Process2 prc)
+        static ExcludedProcessesManager _excludedProcessesManager = new ExcludedProcessesManager();
+        public static ExcludedProcessesManager ExcludedProcessesManager
+        {
+            get
+            {
+                return _excludedProcessesManager;
+            }
+        }
+
+
+        static ConcurrentDictionary<int, ProcHolder> alreadyCheckedProcesses = new ConcurrentDictionary<int, ProcHolder>();
+        public static ProcHolder CheckAndAddProcHolder(EnvDTE80.Process2 process)
+        {
+            ProcHolder returnProcessHolder = null;
+
+            try
+            {
+                if (process == null) return null;
+
+
+                var startTime = ExcludedProcessesManager.CheckAndReturnStartTime(process);
+
+                if (startTime == null) return null;
+
+                if (alreadyCheckedProcesses.TryGetValue(process.ProcessID, out returnProcessHolder))
+                {
+                    if (returnProcessHolder.Process.Name == process.Name)
+                    {
+                        returnProcessHolder.StartTime = startTime;
+                        return returnProcessHolder;
+                    }
+                }
+
+                returnProcessHolder = new ProcHolder(process);
+                if (returnProcessHolder.Process != null)
+                {
+                    alreadyCheckedProcesses.TryAdd(process.ProcessID, returnProcessHolder);
+                    returnProcessHolder.StartTime = startTime;
+                    return returnProcessHolder;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+            }
+            return returnProcessHolder;
+        }
+
+        ProcHolder(EnvDTE80.Process2 prc)
         {
             try
             {
-                if (prc == null) return;
-                var name = prc.Name;
-
-                if (ExcludedProcessNames.Any(x => prc.Name.ToLower().StartsWith(x))) return;
-
-                try
-                {
-                    var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
-
-                    if (ExcludedProcessNames.Any(x => tp.ProcessName.ToLower().StartsWith(x))) return;
-
-                    if (WebServerProcessNames.Any(n => tp.ProcessName.IndexOf(n) >= 0) == false && IsDotNetProcess(tp) == false) return;
-
-                    StartTime = tp.StartTime;
-                }
-                catch
-                {
-
-                }
-
                 Process = prc;
 
                 using (var mos = new ManagementObjectSearcher(
@@ -63,7 +84,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                         {
                             var cmdLineStr = commandLine.ToString();
 
-                            if (ExcludedProcessNames_WithCommpandLine.Any(x => cmdLineStr.ToLower().StartsWith(x)))
+                            if (ExcludedProcessesManager.CheckCommandLine(cmdLineStr.ToLower()))
                             {
                                 Process = null;
                                 return;
@@ -90,21 +111,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             if (StartTime.HasValue == false) return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
             return string.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
         }
-        public static bool IsDotNetProcess(Process process)
-        {
-            try
-            {
-                var modules = process.Modules.Cast<ProcessModule>().Where(
-                    m => m.ModuleName.StartsWith("mscor", StringComparison.InvariantCultureIgnoreCase));
-
-                return modules.Any();
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
-
         string GetAppPool(string fullCommandLine)
         {
             // for IIS

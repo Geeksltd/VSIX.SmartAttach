@@ -247,6 +247,7 @@
   <ItemGroup>
     <Compile Include="All.cs" />
     <Compile Include="Attacher\AttacherGadget.cs" />
+    <Compile Include="Attacher\ExcludedProcessesManager.cs" />
     <Compile Include="Attacher\FormAttacher.cs">
       <SubType>Form</SubType>
     </Compile>

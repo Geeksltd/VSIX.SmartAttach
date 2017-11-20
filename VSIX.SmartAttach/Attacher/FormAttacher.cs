@@ -6,7 +6,9 @@ using GeeksAddin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
@@ -40,6 +42,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 lstRemoteMachines.Items.Add(m);
         }
 
+        Task flushTask = null;
         void RefreshList()
         {
             listBoxProcess.SafeAction(l => l.Items.Clear());
@@ -56,7 +59,19 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
                 if (CheckUser(processes) == false) return;
 
-                foreach (ProcHolder holder in processes.Select(proc => new ProcHolder(proc)).OrderByDescending(proc => proc.StartTime))
+                if (flushTask != null) Task.WaitAll(flushTask);
+
+                var procHolders =
+                    processes
+                    .AsParallel()
+                    .Select(proc => ProcHolder.CheckAndAddProcHolder(proc))
+                    .Where(proc => proc != null)
+                    .OrderByDescending(proc => proc.StartTime)
+                    .ToList();
+
+                flushTask = Task.Run(() => ProcHolder.ExcludedProcessesManager.Flush());
+
+                foreach (ProcHolder holder in procHolders)
                 {
                     if ((checkBoxExcludeMSharp.Checked && holder.AppPool != null && !holder.AppPool.Contains("M#")) || (!checkBoxExcludeMSharp.Checked))
                     {
@@ -99,7 +114,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
         bool CheckUser(List<Process2> processes)
         {
-            var w3wpProcess = processes.FirstOrDefault(x => x.Name.Contains(ProcHolder.WebServer_W3WP_ProcessName));
+            var w3wpProcess = processes.FirstOrDefault(x => x.Name.Contains(ExcludedProcessesManager.WebServer_W3WP_ProcessName));
             if (w3wpProcess != null)
             {
                 var process = System.Diagnostics.Process.GetProcessById(w3wpProcess.ProcessID);
