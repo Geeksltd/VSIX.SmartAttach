@@ -77,7 +77,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
                 if (ExcludedProcessNames.Any(x => tp.ProcessName.ToLower().StartsWith(x))) return null;
 
-                if (WebServerProcessNames.Any(n => tp.ProcessName.IndexOf(n) >= 0) == false && IsDotNetProcess(tp, processFullName) == false)
+                if (WebServerProcessNames.Any(n => processFullName.IndexOf(n) >= 0) == false && IsDotNetProcess(tp, processFullName) == false)
                     return null;
 
                 return tp.StartTime;
