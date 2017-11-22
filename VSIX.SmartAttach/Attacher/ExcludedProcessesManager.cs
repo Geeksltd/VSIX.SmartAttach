@@ -14,7 +14,18 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
         public static readonly string WebServer_W3WP_ProcessName = "w3wp";
         static readonly string[] WebServerProcessNames = new[] { WebServer_W3WP_ProcessName, "iisexpress.exe" };
-        static readonly string[] ExcludedProcessNames = new[] { "ServiceHub".ToLower(), "Microsoft".ToLower(), "iisexpresstray", "devenv" };
+
+        private static readonly string[] ExcludedProcessNames = new[]
+        {
+            "ServiceHub".ToLower(),
+            "Microsoft".ToLower(),
+            "iisexpresstray".ToLower(),
+            "devenv".ToLower(),
+            "IntelliTrace.exe".ToLower(),
+            "Msbuild.exe".ToLower(),
+            "MSBuildWatcher.exe".ToLower(),
+            "IpOverUsbSvc.exe".ToLower()
+        };
         static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
 
 

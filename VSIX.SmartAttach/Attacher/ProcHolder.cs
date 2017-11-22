@@ -109,7 +109,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             if (Process == null) return "NULL";
 
             if (StartTime.HasValue == false) return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
-            return string.Format("{1} ({0}) [started {2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
+            return string.Format("{1} ({0}) [{2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value, 1), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
         }
         string GetAppPool(string fullCommandLine)
         {
