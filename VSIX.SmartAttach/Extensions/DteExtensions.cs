@@ -1,11 +1,11 @@
 namespace GeeksAddin
 {
-    using EnvDTE;
-    using EnvDTE80;
-    using Geeks.VSIX.SmartAttach.Base;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using EnvDTE;
+    using EnvDTE80;
+    using Geeks.VSIX.SmartAttach.Base;
 
     static class DteExtensions
     {

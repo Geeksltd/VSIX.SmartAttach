@@ -1,13 +1,12 @@
-using GeeksAddin;
 using System;
-using System.Diagnostics;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using System.Collections.Concurrent;
+using GeeksAddin;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -19,53 +18,10 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         public string AppPool { get; private set; }
         public DateTime? StartTime { get; private set; } = null;
 
-        static ExcludedProcessesManager _excludedProcessesManager = new ExcludedProcessesManager();
-        public static ExcludedProcessesManager ExcludedProcessesManager
-        {
-            get
-            {
-                return _excludedProcessesManager;
-            }
-        }
-
+        static ExcludedProcessesManager excludedProcessesManager = new ExcludedProcessesManager();
+        public static ExcludedProcessesManager ExcludedProcessesManager => excludedProcessesManager;
 
         static ConcurrentDictionary<int, ProcHolder> alreadyCheckedProcesses = new ConcurrentDictionary<int, ProcHolder>();
-        public static ProcHolder CheckAndAddProcHolder(EnvDTE80.Process2 process)
-        {
-            ProcHolder returnProcessHolder = null;
-
-            try
-            {
-                if (process == null) return null;
-
-
-                var startTime = ExcludedProcessesManager.CheckAndReturnStartTime(process);
-
-                if (startTime == null) return null;
-
-                if (alreadyCheckedProcesses.TryGetValue(process.ProcessID, out returnProcessHolder))
-                {
-                    if (returnProcessHolder.Process.Name == process.Name)
-                    {
-                        returnProcessHolder.StartTime = startTime;
-                        return returnProcessHolder;
-                    }
-                }
-
-                returnProcessHolder = new ProcHolder(process);
-                if (returnProcessHolder.Process != null)
-                {
-                    alreadyCheckedProcesses.TryAdd(process.ProcessID, returnProcessHolder);
-                    returnProcessHolder.StartTime = startTime;
-                    return returnProcessHolder;
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-            }
-            return returnProcessHolder;
-        }
 
         ProcHolder(EnvDTE80.Process2 prc)
         {
@@ -103,14 +59,54 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             {
             }
         }
+        public static ProcHolder CheckAndAddProcHolder(EnvDTE80.Process2 process)
+        {
+            ProcHolder returnProcessHolder = null;
+
+            try
+            {
+                if (process == null) return null;
+
+                var startTime = ExcludedProcessesManager.CheckAndReturnStartTime(process);
+
+                if (startTime == null) return null;
+
+                if (alreadyCheckedProcesses.TryGetValue(process.ProcessID, out returnProcessHolder))
+                {
+                    if (returnProcessHolder.Process.Name == process.Name)
+                    {
+                        returnProcessHolder.StartTime = startTime;
+                        return returnProcessHolder;
+                    }
+                }
+
+                returnProcessHolder = new ProcHolder(process);
+                if (returnProcessHolder.Process != null)
+                {
+                    alreadyCheckedProcesses.TryAdd(process.ProcessID, returnProcessHolder);
+                    returnProcessHolder.StartTime = startTime;
+                    return returnProcessHolder;
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+            }
+
+            return returnProcessHolder;
+        }
 
         public override string ToString()
         {
             if (Process == null) return "NULL";
 
-            if (StartTime.HasValue == false) return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
-            return string.Format("{1} ({0}) [{2}] [ {3} ]", Process.ProcessID, AppPool, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value, 1), StartTime.Value.ToLongTimeString()).Replace("Geeks@", "");
+            if (StartTime.HasValue == false)
+                return string.Format("{1} ({0})", Process.ProcessID, AppPool, Process.TransportQualifier).Replace("Geeks@", "");
+
+            return AppPool.PadRight(25, ' ') + string.Format(" ({0}: {1})", Process.ProcessID, MSharp::System.MSharpExtensions.ToTimeDifferenceString(StartTime.Value, 1)).Remove("Geeks@");
         }
+
         string GetAppPool(string fullCommandLine)
         {
             // for IIS

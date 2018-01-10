@@ -1,15 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using Geeks.VSIX.SmartAttach.Base;
 using Geeks.VSIX.SmartAttach.Properties;
 using GeeksAddin;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -42,7 +41,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 lstRemoteMachines.Items.Add(m);
         }
 
-        Task flushTask = null;
+        Task flushTask;
         void RefreshList()
         {
             listBoxProcess.SafeAction(l => l.Items.Clear());
@@ -129,6 +128,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -173,9 +173,8 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     if (processes != null)
                     {
                         foreach (EnvDTE.Process p in processes)
-                        {
                             yield return p;
-                        }
+
                     }
                 }
             }

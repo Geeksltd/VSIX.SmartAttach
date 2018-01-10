@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using Geeks.VSIX.SmartAttach.Attacher;
 using GeeksAddin;
-using System.Collections.Generic;
 
 namespace Geeks.VSIX.SmartAttach
 {

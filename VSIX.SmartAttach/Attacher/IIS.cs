@@ -1,6 +1,6 @@
-using Microsoft.Web.Administration;
 using System;
 using System.Linq;
+using Microsoft.Web.Administration;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
@@ -42,7 +42,7 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
         #region IDisposable Members
 
-        bool disposed = false;
+        bool disposed;
 
         public void Dispose()
         {

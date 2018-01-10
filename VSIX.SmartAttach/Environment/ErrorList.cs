@@ -1,5 +1,5 @@
-using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell;
 
 namespace Geeks.VSIX.SmartAttach.Base
 {

@@ -1,5 +1,4 @@
-﻿using EnvDTE;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,12 +9,12 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 {
     public class ExcludedProcessesManager
     {
-        static readonly string ExcludedProcessesFileName = null;//"c:\\test\\processes.txt";
+        static readonly string ExcludedProcessesFileName;//"c:\\test\\processes.txt";
 
         public static readonly string WebServer_W3WP_ProcessName = "w3wp";
         static readonly string[] WebServerProcessNames = new[] { WebServer_W3WP_ProcessName, "iisexpress.exe" };
 
-        private static readonly string[] ExcludedProcessNames = new[]
+        static readonly string[] ExcludedProcessNames = new[]
         {
             "ServiceHub".ToLower(),
             "Microsoft".ToLower(),
@@ -24,16 +23,18 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             "IntelliTrace.exe".ToLower(),
             "Msbuild.exe".ToLower(),
             "MSBuildWatcher.exe".ToLower(),
-            "IpOverUsbSvc.exe".ToLower()
+            "MSBuild.exe".ToLower(),
+            "IpOverUsbSvc.exe".ToLower(),
+            "PerfWatson2.exe".ToLower()
         };
-        static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
 
+        static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
 
         public static bool IsEnabled = true;
         readonly static bool ShouldWrtieToSetting = true;
-        readonly static bool ShouldWrtieToFile = false;
+        readonly static bool ShouldWrtieToFile;
 
-        static Lazy<List<string>> _ExcludedNoneDotNetProcesses =
+        static Lazy<List<string>> excludedNoneDotNetProcesses =
             new Lazy<List<string>>(() =>
             {
                 if (!ShouldWrtieToSetting && !ShouldWrtieToFile) return new List<string>();
@@ -50,9 +51,10 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                     if (existsFile) return File.ReadAllLines(ExcludedProcessesFileName).ToList();
                     File.Create(ExcludedProcessesFileName).Close();
                 }
+
                 return new List<string>();
             });
-        static List<string> ExcludedNoneDotNetProcesses = _ExcludedNoneDotNetProcesses.Value;
+        static List<string> ExcludedNoneDotNetProcesses = excludedNoneDotNetProcesses.Value;
 
         bool IsDotNetProcess(System.Diagnostics.Process process, string processFullName)
         {
@@ -82,9 +84,14 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
             if (ExcludedProcessNames.Any(x => prc.Name.ToLower().StartsWith(x))) return null;
 
+            var fileName = Path.GetFileName(prc.Name);
+            if (fileName.HasValue())
+                if (ExcludedProcessNames.Any(x => fileName.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                    return null;
+
             try
             {
-                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+                var tp = Process.GetProcessById(prc.ProcessID);
 
                 if (ExcludedProcessNames.Any(x => tp.ProcessName.ToLower().StartsWith(x))) return null;
 
@@ -104,7 +111,6 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         {
             return ExcludedProcessNames_WithCommpandLine.Any(x => cmdLineStr.ToLower().StartsWith(x));
         }
-
 
         ConcurrentQueue<string> tempExcludedNoneDotNetProcesses = new ConcurrentQueue<string>();
         void AddExcludedNoneDotNetProcesses(string processFullName)
@@ -127,12 +133,12 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             {
                 File.AppendAllLines(ExcludedProcessesFileName, tempExcludedNoneDotNetProcesses);
             }
+
             foreach (var processFullName in tempExcludedNoneDotNetProcesses)
-            {
                 ExcludedNoneDotNetProcesses.Add(processFullName);
-            }
+
+
             tempExcludedNoneDotNetProcesses = new ConcurrentQueue<string>();
         }
-
     }
 }
