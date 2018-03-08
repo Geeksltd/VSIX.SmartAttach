@@ -49,6 +49,10 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                             var appPool = GetAppPool(commandLine.ToString());
 
                             if (appPool != null) AppPool += appPool;
+                            
+                            var dotNetCoreApp = GetDotNetCoreApp(prc, commandLine.ToString());
+
+                            if (dotNetCoreApp != null) AppPool += dotNetCoreApp;
                         }
                     }
                 }
@@ -139,6 +143,19 @@ namespace Geeks.VSIX.SmartAttach.Attacher
                 }
             }
 
+            return null;
+        }
+
+        string GetDotNetCoreApp(EnvDTE80.Process2 prc, string fullCommandLine)
+        {
+            if (fullCommandLine.Contains("dotnet.exe") == false) return null;
+            var match = Regex.Match(fullCommandLine, @"dotnet.exe"" exec ""(.*)""");
+            if (match.Success && match.Groups.Count >= 1)
+            {
+                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+
+                return Path.GetFileName(match.Groups[1].Value.Trim()) + "[\"" + tp.MainWindowTitle + "\"]";
+            }
             return null;
         }
     }

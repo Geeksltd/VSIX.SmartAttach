@@ -60,7 +60,9 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         {
             try
             {
-                var modules = process.Modules.Cast<ProcessModule>().Where(
+                    if (processFullName.Contains("dotnet.exe")) return true;
+
+                    var modules = process.Modules.Cast<ProcessModule>().Where(
                     m => m.ModuleName.StartsWith("mscor", StringComparison.InvariantCultureIgnoreCase));
 
                 return modules.Any();
