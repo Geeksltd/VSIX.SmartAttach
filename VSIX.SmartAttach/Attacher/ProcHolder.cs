@@ -149,12 +149,10 @@ namespace Geeks.VSIX.SmartAttach.Attacher
         string GetDotNetCoreApp(EnvDTE80.Process2 prc, string fullCommandLine)
         {
             if (fullCommandLine.Contains("dotnet.exe") == false) return null;
-            var match = Regex.Match(fullCommandLine, @"dotnet.exe"" exec ""(.*)""");
+            var match = Regex.Match(fullCommandLine, @"dotnet.exe"".*exec.*""(.*)""");
             if (match.Success && match.Groups.Count >= 1)
             {
-                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
-
-                return Path.GetFileName(match.Groups[1].Value.Trim()) + "[\"" + tp.MainWindowTitle + "\"]";
+                return $"dotnet[\"{Path.GetFileName(match.Groups[1].Value.Trim())}\"]";
             }
             return null;
         }
