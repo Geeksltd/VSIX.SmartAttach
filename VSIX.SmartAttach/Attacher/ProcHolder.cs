@@ -152,7 +152,21 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             var match = Regex.Match(fullCommandLine, @"dotnet.exe"".*exec.*""(.*)""");
             if (match.Success && match.Groups.Count >= 1)
             {
-                return $"dotnet[\"{Path.GetFileName(match.Groups[1].Value.Trim())}\"]";
+                var tp = System.Diagnostics.Process.GetProcessById(prc.ProcessID);
+
+                string title = Path.GetFileName(match.Groups[1].Value.Trim());
+
+                try
+                {
+                    var windowtitle = tp.MainWindowTitle;
+
+                    if (windowtitle != null) title += " >> " + windowtitle;
+                }
+                catch
+                {
+                }
+
+                return $"dotnet[\"{title}\"]";
             }
             return null;
         }

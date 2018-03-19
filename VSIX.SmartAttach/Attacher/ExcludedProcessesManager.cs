@@ -128,7 +128,11 @@ namespace Geeks.VSIX.SmartAttach.Attacher
 
             if (ShouldWrtieToSetting)
             {
-                VSIX.SmartAttach.Properties.Settings.Default.ExcludedNoneDotNetProcess = VSIX.SmartAttach.Properties.Settings.Default.ExcludedNoneDotNetProcess + string.Join("\n", tempExcludedNoneDotNetProcesses);
+                var oldprocesses = VSIX.SmartAttach.Properties.Settings.Default.ExcludedNoneDotNetProcess.Split(new[]{'\n'}, StringSplitOptions.RemoveEmptyEntries);
+                
+                var allProcesses =  string.Join("\n", oldprocesses.Union(tempExcludedNoneDotNetProcesses).Distinct());
+                
+                VSIX.SmartAttach.Properties.Settings.Default.ExcludedNoneDotNetProcess = allProcesses;
                 VSIX.SmartAttach.Properties.Settings.Default.Save();
             }
             else if (ShouldWrtieToFile)
