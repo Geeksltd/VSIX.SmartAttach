@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE80;
 using Geeks.VSIX.SmartAttach.Attacher;
 using Geeks.VSIX.SmartAttach.Base;
@@ -9,13 +10,15 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Geeks.VSIX.SmartAttach
 {
-    [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]    // Microsoft.VisualStudio.VSConstants.UICONTEXT_NoSolution
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F", PackageAutoLoadFlags.BackgroundLoad)]    // Microsoft.VisualStudio.VSConstants.UICONTEXT_NoSolution
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideService(typeof(IMenuCommandService), IsAsyncQueryable = true)]
+
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideOptionPage(typeof(OptionsPage), "Geeks productivity tools", "General", 0, 0, true)]
     [Guid(GuidList.GuidGeeksProductivityToolsPkgString)]
-    public sealed class SmartAttachPackage : Package
+    public sealed class SmartAttachPackage : AsyncPackage
     {
         public SmartAttachPackage() { }
 
@@ -26,17 +29,20 @@ namespace Geeks.VSIX.SmartAttach
 
         public static SmartAttachPackage Instance { get; private set; }
 
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            await base.InitializeAsync(cancellationToken, progress);
+
             App.Initialize(GetDialogPage(typeof(OptionsPage)) as OptionsPage);
+
 
             Instance = this;
 
-            var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
+            var componentModel = (IComponentModel)await GetServiceAsync(typeof(SComponentModel));
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
-            var menuCommandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var menuCommandService = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             var cmdidWebFileToggleId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, 0x101);
             var cmdidAttacherId = new CommandID(GuidList.GuidGeeksProductivityToolsCmdSet, (int)PkgCmdIDList.CmdidAttacher);
@@ -62,7 +68,18 @@ namespace Geeks.VSIX.SmartAttach
             solEvents = events.SolutionEvents;
             docEvents.DocumentSaved += DocumentEvents_DocumentSaved;
             solEvents.Opened += delegate { App.Initialize(GetDialogPage(typeof(OptionsPage)) as OptionsPage); };
+
         }
+
+        //    SetCommandBindings();
+
+        //    // Hook up event handlers
+        //    events = App.DTE.Events;
+        //    docEvents = events.DocumentEvents;
+        //    solEvents = events.SolutionEvents;
+        //    docEvents.DocumentSaved += DocumentEvents_DocumentSaved;
+        //    solEvents.Opened += delegate { App.Initialize(GetDialogPage(typeof(OptionsPage)) as OptionsPage); };
+        //}
 
         void MenuCommand_BeforeQueryStatus(object sender, EventArgs e)
         {
@@ -78,6 +95,7 @@ namespace Geeks.VSIX.SmartAttach
 
         void DocumentEvents_DocumentSaved(EnvDTE.Document document)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 if (document.Name.EndsWith(".cs") ||
@@ -97,6 +115,7 @@ namespace Geeks.VSIX.SmartAttach
 
         void SetCommandBindings()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var commands = (Commands2)App.DTE.Commands;
             foreach (EnvDTE.Command cmd in commands)
             {
