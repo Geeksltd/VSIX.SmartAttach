@@ -25,7 +25,10 @@ namespace Geeks.VSIX.SmartAttach.Attacher
             "MSBuildWatcher.exe".ToLower(),
             "MSBuild.exe".ToLower(),
             "IpOverUsbSvc.exe".ToLower(),
-            "PerfWatson2.exe".ToLower()
+            "PerfWatson2.exe".ToLower(),
+            "ssms.exe".ToLower(),
+            "vsixinstaller.exe".ToLower(),
+            "xamarin.simulator.windows.exe".ToLower()
         };
 
         static readonly string[] ExcludedProcessNames_WithCommpandLine = new[] { "C:\\program files (x86)\\".ToLower() };
