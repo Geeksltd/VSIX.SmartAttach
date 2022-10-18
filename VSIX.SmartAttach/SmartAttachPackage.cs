@@ -103,7 +103,7 @@ namespace Geeks.VSIX.SmartAttach
                     document.Name.EndsWith(".js") ||
                     document.Name.EndsWith(".ts"))
                 {
-                    document.DTE.ExecuteCommand("Edit.FormatDocument");
+                    //document.DTE.ExecuteCommand("Edit.FormatDocument");
                 }
 
                 if (!document.Saved) document.Save();

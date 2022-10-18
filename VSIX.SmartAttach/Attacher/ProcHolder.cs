@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -10,7 +11,7 @@ using GeeksAddin;
 
 namespace Geeks.VSIX.SmartAttach.Attacher
 {
-	extern alias MSharp;
+	//extern alias MSharp;
 
 	public class ProcHolder
 	{
